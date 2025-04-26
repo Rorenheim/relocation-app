@@ -37,3 +37,13 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo 
+
+# Glitch specific
+.glitch-assets
+.node-gyp/
+.config/
+pids/
+.env.local
+.bash_history
+.glitchdotcom.json
+shrinkwrap.yaml 

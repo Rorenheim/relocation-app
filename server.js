@@ -9,12 +9,16 @@ const cheerio = require('cheerio');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const isGlitch = process.env.PROJECT_DOMAIN || process.env.NODE_ENV === 'production';
 
 // Middleware
 app.use(compression()); // Compress all responses
 app.use(cors()); // Enable CORS for all routes
 app.use(express.static('public'));
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.json({ limit: '5mb' })); // Reduced limit for Glitch
+
+// Log startup environment
+console.log(`Starting server in ${isGlitch ? 'Glitch' : 'local'} environment`);
 
 // Data file path
 const DATA_FILE = path.join(__dirname, 'data.json');
@@ -75,7 +79,20 @@ app.post('/api/data', (req, res) => {
 // Utility function for ID generation needed by scraping endpoint
 const generateId = () => `id_${Date.now().toString(36)}_${Math.random().toString(36).substr(2, 5)}`;
 
-// Simple title fetcher endpoint
+// Array of user agents to rotate through
+const USER_AGENTS = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0'
+];
+
+// Get a random user agent
+const getRandomUserAgent = () => {
+  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+};
+
+// Simple title fetcher endpoint - optimized for Glitch
 app.post('/api/scrape-apartment', async (req, res) => {
   const { url, title: customTitle } = req.body;
   if (!url) {
@@ -95,11 +112,13 @@ app.post('/api/scrape-apartment', async (req, res) => {
     // Only fetch title from page if custom title not provided
     if (!customTitle) {
       try {
-        // Simple GET request with a short timeout
+        // Simple GET request with a short timeout and random user agent
         const response = await axios.get(url, {
-          timeout: 5000, 
+          timeout: 3000, // Shorter timeout for Glitch
           headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'User-Agent': getRandomUserAgent(),
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5'
           }
         });
         
@@ -122,13 +141,22 @@ app.post('/api/scrape-apartment', async (req, res) => {
         console.log("Found title:", title);
         
       } catch (fetchError) {
-        console.warn("Couldn't fetch page title:", fetchError.message);
-        // Continue with the default title
+        console.warn(`Couldn't fetch page title: ${fetchError.message}`);
+        // For sites that block scrapers, create a more descriptive fallback title
+        if (fetchError.response && fetchError.response.status === 401) {
+          title = `${domain} - Protected content`;
+        } else if (fetchError.response && fetchError.response.status === 403) {
+          title = `${domain} - Access restricted`;
+        } else if (fetchError.code === 'ECONNABORTED') {
+          title = `${domain} - Connection timeout`;
+        }
+        // Continue with the fallback title
       }
     } else {
       console.log("Using custom title:", customTitle);
     }
     
+    // Simplified response
     res.json({
       success: true,
       metadata: {
@@ -141,7 +169,8 @@ app.post('/api/scrape-apartment', async (req, res) => {
   } catch (error) {
     console.error(`Error processing ${url}:`, error.message);
     return res.status(500).json({ 
-      error: `Invalid URL format. Please check the URL and try again.`
+      error: `Invalid URL format. Please check the URL and try again.`,
+      message: error.message
     });
   }
 });
@@ -188,6 +217,16 @@ app.post('/api/restore', (req, res) => {
   }
 });
 
+// Info endpoint for Glitch status checks
+app.get('/api/info', (req, res) => {
+  res.json({
+    status: 'ok',
+    environment: isGlitch ? 'glitch' : 'local',
+    version: require('./package.json').version,
+    uptime: process.uptime()
+  });
+});
+
 // Serve index.html for all other routes (SPA fallback)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -196,7 +235,7 @@ app.get('*', (req, res) => {
 // Handle server shutdown gracefully
 const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  console.log(`Visit http://localhost:${port} in your browser`);
+  console.log(`Visit http://${isGlitch ? process.env.PROJECT_DOMAIN + '.glitch.me' : 'localhost:' + port} in your browser`);
 });
 
 process.on('SIGTERM', () => {
