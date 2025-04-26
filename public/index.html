@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="min-h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Relocation planner for moving from Berlin to Frankfurt">
+  <meta name="theme-color" content="#4126F8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Berlin → Frankfurt | Relocation Planner</title>
+  
+  <!-- Fonts and Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  
+  <!-- Material Web Components -->
+  <link href="https://cdn.jsdelivr.net/npm/material-components-web@14.0.0/dist/material-components-web.min.css" rel="stylesheet">
+  
+  <!-- App Styles -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+
+</head>
+<body class="min-h-screen bg-gray-100">
+  <div class="drawer">
+    <input id="drawer-toggle" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content flex flex-col">
+      <!-- App Header -->
+      <header class="navbar bg-base-100 shadow-md z-30">
+        <div class="navbar-start">
+          <a href="#" class="font-bold normal-case text-xl text-primary pl-4 lg:pl-0">Berlin → Frankfurt</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal px-1">
+            <li><a href="#overview" class="nav-btn" data-page="overview"><i class="ri-dashboard-line mr-2"></i>Overview</a></li>
+            <li><a href="#tasks" class="nav-btn" data-page="tasks"><i class="ri-task-line mr-2"></i>Tasks</a></li>
+            <li><a href="#notes" class="nav-btn" data-page="notes"><i class="ri-sticky-note-line mr-2"></i>Notes</a></li>
+            <li><a href="#apartments" class="nav-btn" data-page="apartments"><i class="ri-home-line mr-2"></i>Apartments</a></li>
+          </ul>
+        </div>
+        <div class="navbar-end">
+          <button id="theme-toggle" class="btn btn-ghost btn-circle tooltip theme-toggle-btn" data-tip="Toggle theme">
+            <i class="ri-moon-line text-lg"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main id="main-content" class="flex-1 overflow-y-auto bg-base-200">
+        <!-- Content will be dynamically loaded here -->
+        <div class="flex items-center justify-center h-full">
+          <span class="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+      </main>
+
+      <!-- Mobile Navigation -->
+      <div class="btm-nav lg:hidden">
+        <a href="#overview" class="nav-btn" data-page="overview">
+          <i class="ri-dashboard-line"></i>
+          <span class="btm-nav-label">Overview</span>
+        </a>
+        <a href="#tasks" class="nav-btn" data-page="tasks">
+          <i class="ri-task-line"></i>
+          <span class="btm-nav-label">Tasks</span>
+        </a>
+        <a href="#notes" class="nav-btn" data-page="notes">
+          <i class="ri-sticky-note-line"></i>
+          <span class="btm-nav-label">Notes</span>
+        </a>
+        <a href="#apartments" class="nav-btn" data-page="apartments">
+          <i class="ri-home-line"></i>
+          <span class="btm-nav-label">Apartments</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Sidebar Drawer -->
+    <div class="drawer-side">
+      <label for="drawer-toggle" class="drawer-overlay"></label>
+      <aside class="bg-base-200 w-64 min-h-full">
+        <div class="p-4 bg-primary text-primary-content">
+          <h2 class="text-xl font-bold">Relocation Planner</h2>
+          <p class="text-sm opacity-80">Berlin → Frankfurt</p>
+        </div>
+        <ul class="menu p-4 text-base-content">
+          <li><a href="#overview" class="nav-btn" data-page="overview"><i class="ri-dashboard-line mr-2"></i>Overview</a></li>
+          <li><a href="#tasks" class="nav-btn" data-page="tasks"><i class="ri-task-line mr-2"></i>Tasks</a></li>
+          <li><a href="#notes" class="nav-btn" data-page="notes"><i class="ri-sticky-note-line mr-2"></i>Notes</a></li>
+          <li><a href="#apartments" class="nav-btn" data-page="apartments"><i class="ri-home-line mr-2"></i>Apartments</a></li>
+          <li class="menu-title">
+            <span>Settings</span>
+          </li>
+          <li><a id="theme-toggle-sidebar" class="theme-toggle-btn"><i class="ri-contrast-2-line mr-2"></i>Toggle Theme</a></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="/script.js"></script>
+</body>
+</html>

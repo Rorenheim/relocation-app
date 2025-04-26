@@ -1,0 +1,161 @@
+{
+  "tasks": [
+    {
+      "id": "task1",
+      "title": "Gather Berlin tenancy, Anmeldung, insurance and pet passport papers",
+      "description": "Collect all important documents and make copies. Store digital versions in cloud storage.",
+      "category": "docs",
+      "date": "2025-04-26",
+      "assignee": "paul",
+      "priority": "medium",
+      "createdAt": "2025-04-14T10:00:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task2",
+      "title": "Find and book Darya's temporary Frankfurt apartment",
+      "description": "Look for a pet-friendly furnished apartment for 1-2 months starting June 1st.",
+      "category": "apartment",
+      "date": "2025-04-28",
+      "assignee": "darya",
+      "priority": true,
+      "createdAt": "2025-04-14T10:05:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task3",
+      "title": "Send notice to Berlin landlord",
+      "description": "Target handover date: July 31st. Check contract for notice period requirements.",
+      "category": "apartment",
+      "date": "2025-05-03",
+      "assignee": "paul",
+      "priority": true,
+      "createdAt": "2025-04-14T10:10:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task4",
+      "title": "Notify Berlin electricity & internet providers",
+      "description": "Cancel services effective July 31st. Check for any early termination fees.",
+      "category": "services",
+      "date": "2025-05-04",
+      "assignee": "paul",
+      "priority": "medium",
+      "createdAt": "2025-04-14T10:15:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task5",
+      "title": "Ask cousin/uncle for help with apartment move-out",
+      "description": "See if they can help with packing, cleaning, or transportation.",
+      "category": "moving",
+      "date": "2025-05-05",
+      "assignee": "paul",
+      "priority": "medium",
+      "createdAt": "2025-04-14T10:20:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task6",
+      "title": "Create spreadsheet to track relocation expenses",
+      "description": "Set up categories for different expenses to make reimbursement easier.",
+      "category": "finances",
+      "date": "2025-05-06",
+      "assignee": "darya",
+      "priority": true,
+      "createdAt": "2025-04-14T10:25:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task7",
+      "title": "Book Darya & cat transportation to Frankfurt",
+      "description": "Research pet-friendly transportation options for end of May.",
+      "category": "moving",
+      "date": "2025-05-09",
+      "assignee": "darya",
+      "priority": true,
+      "createdAt": "2025-04-14T10:30:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task8",
+      "title": "Get quotes from moving companies",
+      "description": "Contact at least 3 moving companies for quotes for July move.",
+      "category": "moving",
+      "date": "2025-05-12",
+      "assignee": "paul",
+      "priority": "medium",
+      "createdAt": "2025-04-14T10:35:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task9",
+      "title": "Prepare Darya's documents for Frankfurt Anmeldung",
+      "description": "Ensure all necessary documents are ready for registration at the new address.",
+      "category": "paperwork",
+      "date": "2025-05-16",
+      "assignee": "darya",
+      "priority": true,
+      "createdAt": "2025-04-14T10:40:00.000Z",
+      "status": "todo"
+    },
+    {
+      "id": "task10",
+      "title": "Start viewing permanent apartments in Frankfurt",
+      "description": "Begin search for long-term apartment that meets our requirements.",
+      "category": "apartment",
+      "date": "2025-05-16",
+      "assignee": "both",
+      "priority": true,
+      "createdAt": "2025-04-14T10:45:00.000Z",
+      "status": "todo"
+    }
+  ],
+  "notes": [
+    {
+      "id": "note1",
+      "title": "Relocation Budget Notes",
+      "content": "Darya's company offers €7,000 for relocation expenses. We need to keep all receipts for:\n- Moving company costs\n- Temporary housing\n- Travel to Frankfurt\n- Initial setup costs for new apartment",
+      "author": "paul",
+      "createdAt": "2025-04-14T11:00:00.000Z",
+      "updatedAt": "2025-04-14T11:00:00.000Z"
+    },
+    {
+      "id": "note2",
+      "title": "Frankfurt Apartment Requirements",
+      "content": "For our permanent apartment in Frankfurt, we need:\n- At least 70m²\n- Pet-friendly\n- Max 30 min commute to Kia office\n- Balcony or garden access\n- Storage for bikes\n- Close to public transportation",
+      "author": "darya",
+      "createdAt": "2025-04-14T11:05:00.000Z",
+      "updatedAt": "2025-04-14T11:05:00.000Z"
+    },
+    {
+      "id": "note3",
+      "title": "Berlin Apartment Handover Checklist",
+      "content": "- Clean entire apartment\n- Repair any damages\n- Remove all personal items\n- Take meter readings (electricity, water, heating)\n- Return all keys\n- Complete handover protocol with landlord",
+      "author": "paul",
+      "createdAt": "2025-04-14T11:10:00.000Z",
+      "updatedAt": "2025-04-14T11:10:00.000Z"
+    },
+    {
+      "id": "note4",
+      "title": "Cat Travel Preparations",
+      "content": "To prepare our cat for the move:\n- Ensure vaccinations are up to date\n- Get health certificate from vet before travel\n- Buy comfortable carrier for train/car journey\n- Pack familiar bedding and toys\n- Bring supply of regular food and medication",
+      "author": "darya",
+      "createdAt": "2025-04-14T11:15:00.000Z",
+      "updatedAt": "2025-04-14T11:15:00.000Z"
+    }
+  ],
+  "apartments": [
+    {
+      "id": "id_m9yn2y5r_cuvml",
+      "metadata": {
+        "id": "id_m9yn2y5r_cuvml",
+        "originalUrl": "https://www.immobilienscout24.de/expose/158620011?searchId=8a630caa-aec0-3af8-8551-f7c919791c69&searchUrl=/de/berlin/berlin/wohnung-kaufen?numberofrooms%3D3.0-4.0%26livingspace%3D70.0-110.0%26bbox%3DYX1sX0l1empwQXNYPz9tcUByWD8.&searchType=district&fairPrice=FAIR_OFFER#/",
+        "title": "3 apt, westend",
+        "isFavorite": true,
+        "isApplied": false
+      },
+      "createdAt": "2025-04-26T19:54:29.881Z"
+    }
+  ]
+}
