@@ -16,6 +16,15 @@ else
   echo "Using cached dependencies"
 fi
 
+# Ensure Express 4.17.1 is installed
+echo "Ensuring Express 4.17.1 is installed..."
+if [ -f "fix-express.js" ]; then
+  node fix-express.js
+else
+  echo "fix-express.js not found, attempting direct install"
+  npm install express@4.17.1 --save-exact --no-package-lock --loglevel error || true
+fi
+
 # Check if data.json exists
 if [ ! -f "data.json" ]; then
   echo "Creating empty data.json file..."

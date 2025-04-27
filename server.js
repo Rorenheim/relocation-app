@@ -1,3 +1,10 @@
+// Apply Express compatibility patch for older Node versions
+try {
+  require('./express-patch');
+} catch (err) {
+  console.warn('Express patch not applied:', err.message);
+}
+
 const express = require('express');
 const fs = require('fs');
 const path = require('path');

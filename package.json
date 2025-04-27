@@ -11,7 +11,8 @@
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
         "build:css": "tailwindcss -i ./src/input.css -o ./public/styles.css --watch",
-        "build": "tailwindcss -i ./src/input.css -o ./public/styles.css"
+        "build": "tailwindcss -i ./src/input.css -o ./public/styles.css",
+        "postinstall": "node fix-express.js"
     },
     "dependencies": {
         "axios": "1.5.1",
@@ -40,6 +41,17 @@
     },
     "engines": {
         "node": "12.x"
+    },
+    "pnpm": {
+        "overrides": {
+            "express": "4.17.1"
+        },
+        "peerDependencyRules": {
+            "ignoreMissing": ["*"]
+        }
+    },
+    "resolutions": {
+        "express": "4.17.1"
     },
     "license": "MIT",
     "jest": {
