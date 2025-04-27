@@ -46,4 +46,7 @@ pids/
 .env.local
 .bash_history
 .glitchdotcom.json
-shrinkwrap.yaml 
+shrinkwrap.yaml
+
+# Generated files
+public/styles.css 

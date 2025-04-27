@@ -9,7 +9,7 @@ const cheerio = require('cheerio');
 
 const app = express();
 const port = process.env.PORT || 3000;
-const isGlitch = process.env.PROJECT_DOMAIN || process.env.NODE_ENV === 'production';
+const isGlitch = !!process.env.PROJECT_DOMAIN;
 
 // Middleware
 app.use(compression()); // Compress all responses
@@ -81,10 +81,10 @@ const generateId = () => `id_${Date.now().toString(36)}_${Math.random().toString
 
 // Array of user agents to rotate through
 const USER_AGENTS = [
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0'
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0'
 ];
 
 // Get a random user agent
@@ -103,8 +103,15 @@ app.post('/api/scrape-apartment', async (req, res) => {
 
   try {
     // Extract domain for simple identification
-    const urlObj = new URL(url);
-    const domain = urlObj.hostname.replace('www.', '');
+    let domain = '';
+    try {
+      // Using basic URL parsing to avoid potential issues
+      const urlObj = new URL(url);
+      domain = urlObj.hostname.replace('www.', '');
+    } catch (parseError) {
+      console.error('URL parsing error:', parseError.message);
+      domain = url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+    }
     
     // Use custom title if provided, otherwise set default
     let title = customTitle || `Property on ${domain}`;
@@ -117,7 +124,7 @@ app.post('/api/scrape-apartment', async (req, res) => {
           timeout: 3000, // Shorter timeout for Glitch
           headers: {
             'User-Agent': getRandomUserAgent(),
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.5'
           }
         });
@@ -127,7 +134,7 @@ app.post('/api/scrape-apartment', async (req, res) => {
         
         // Try to get the title from meta tags first, then from title tag
         const metaTitle = $('meta[property="og:title"]').attr('content') || 
-                          $('meta[name="title"]').attr('content');
+                         $('meta[name="title"]').attr('content');
                           
         const pageTitle = $('title').text().trim();
         
@@ -223,7 +230,8 @@ app.get('/api/info', (req, res) => {
     status: 'ok',
     environment: isGlitch ? 'glitch' : 'local',
     version: require('./package.json').version,
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    nodeVersion: process.version
   });
 });
 
@@ -235,6 +243,7 @@ app.get('*', (req, res) => {
 // Handle server shutdown gracefully
 const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  console.log(`Node.js version: ${process.version}`);
   console.log(`Visit http://${isGlitch ? process.env.PROJECT_DOMAIN + '.glitch.me' : 'localhost:' + port} in your browser`);
 });
 
