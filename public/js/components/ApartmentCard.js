@@ -88,14 +88,12 @@ class ApartmentCard {
       domain = 'unknown';
     }
     
-    // Set the inner HTML - simple version with just title and link
+    // Set the inner HTML - remove explicit favorite/applied text
     this.element.innerHTML = `
       <div class="card-body p-4">
         <div class="flex justify-between items-start">
           <h3 class="card-title text-base">
             ${Helpers.escapeHtml(metadata.title || 'Apartment Listing')}
-            ${isFavorite ? '<i class="ri-heart-fill text-error ml-1"></i>' : ''}
-            ${isApplied ? '<i class="ri-file-paper-2-fill text-success ml-1"></i>' : ''}
           </h3>
           <div class="flex gap-1">
             <button class="btn btn-ghost btn-sm p-1 h-auto min-h-0 favorite-btn tooltip" data-tip="${isFavorite ? 'Remove favorite' : 'Add to favorites'}">

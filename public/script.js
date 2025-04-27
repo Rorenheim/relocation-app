@@ -22,9 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function fixMobileModals() {
   // Handle clicks on modal backdrops to ensure they function correctly
   document.addEventListener('click', (e) => {
-    // Check if the click is on a modal backdrop
     if (e.target.classList.contains('modal-backdrop')) {
-      // Find the associated modal-toggle and uncheck it
       const forAttr = e.target.getAttribute('for');
       if (forAttr) {
         const toggle = document.getElementById(forAttr);
@@ -39,7 +37,6 @@ function fixMobileModals() {
   const modals = document.querySelectorAll('.modal, .modal-box');
   modals.forEach(modal => {
     modal.addEventListener('touchstart', (e) => {
-      // Prevent event from being immediately canceled
       e.stopPropagation();
     }, { passive: true });
   });
@@ -56,99 +53,82 @@ function fixMobileModals() {
  * This helps adjust the UI when the virtual keyboard appears
  */
 function setupKeyboardDetection() {
-  // Define elements that trigger the keyboard
   const keyboardTriggerElements = 'input:not([type="button"]):not([type="submit"]), textarea, select';
-  
-  // Track the active element to determine if keyboard should be showing
-  let activeElement = null;
-  
-  // Add focus event listeners to all inputs/textareas
-  document.addEventListener('focusin', (e) => {
-    if (e.target.matches(keyboardTriggerElements)) {
-      activeElement = e.target;
-      
-      // Find the parent modal if any
-      const modalBox = activeElement.closest('.modal-box');
-      if (modalBox) {
-        // Add class to indicate keyboard is visible
-        document.body.classList.add('keyboard-visible');
-        
-        // Add iOS specific fixes
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-          // Apply specific CSS fixes for iOS
-          modalBox.style.webkitTransform = 'translate3d(0,0,0)';
-          
-          // Set position fixed to prevent scrolling issues
-          document.body.style.position = 'fixed';
-          document.body.style.width = '100%';
-        }
-        
-        // Scroll the input into view with a small delay to let keyboard appear
-        setTimeout(() => {
-          // Disable smooth scrolling for iOS (can cause issues)
-          const behavior = /iPad|iPhone|iPod/.test(navigator.userAgent) ? 'auto' : 'smooth';
-          activeElement.scrollIntoView({ behavior, block: 'center' });
-        }, 300);
-      }
-    }
-  });
-  
-  // Handle focus out events
-  document.addEventListener('focusout', (e) => {
-    // Small delay to check if another input was focused
-    setTimeout(() => {
-      if (!document.activeElement.matches(keyboardTriggerElements)) {
-        // Remove keyboard visible class
-        document.body.classList.remove('keyboard-visible');
-        
-        // Reset iOS specific fixes
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-          document.body.style.position = '';
-          document.body.style.width = '';
-        }
-      }
-    }, 100);
-  });
-  
-  // Listen for resize events which might indicate keyboard appearance/disappearance
-  let windowHeight = window.innerHeight;
-  window.addEventListener('resize', () => {
-    // If the window height decreased significantly, keyboard likely appeared
-    if (window.innerHeight < windowHeight * 0.8) {
+  let isKeyboardVisible = false;
+  let originalViewportHeight = window.innerHeight;
+  let activeInput = null;
+
+  const applyKeyboardStyles = (isShowing) => {
+    isKeyboardVisible = isShowing;
+    if (isShowing) {
       document.body.classList.add('keyboard-visible');
-      
-      // For iOS specifically
-      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        // Scroll the active element into view if any
-        const activeEl = document.activeElement;
-        if (activeEl && activeEl.matches(keyboardTriggerElements)) {
+      // Scroll focused input into view if needed
+      if (activeInput && activeInput.closest('.modal-box')) {
           setTimeout(() => {
-            activeEl.scrollIntoView({ behavior: 'auto', block: 'center' });
-          }, 300);
-        }
+              activeInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 250); // Delay slightly for keyboard animation
       }
-    } 
-    // If window height increased back to normal, keyboard likely disappeared
-    else if (window.innerHeight > windowHeight * 0.9) {
+    } else {
       document.body.classList.remove('keyboard-visible');
-      
-      // Reset iOS specific fixes
-      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        document.body.style.position = '';
-        document.body.style.width = '';
-      }
+      activeInput = null; // Clear active input when keyboard hides
     }
     
-    // Update stored window height
-    windowHeight = window.innerHeight;
-  });
-  
-  // Special handling for the Apartment URL form
-  document.addEventListener('DOMContentLoaded', () => {
-    const urlForm = document.getElementById('add-url-form');
-    if (urlForm) {
-      // Ensure the form is properly styled
-      urlForm.classList.add('apartment-url-form');
+    // iOS Specific body locking (experimental)
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        document.body.style.position = isShowing ? 'fixed' : '';
+        document.body.style.width = isShowing ? '100%' : '';
+    }
+  };
+
+  document.addEventListener('focusin', (e) => {
+    if (e.target.matches(keyboardTriggerElements)) {
+      activeInput = e.target; // Store the focused element
+      // Assume keyboard is showing on focus for immediate visual feedback
+      if (!isKeyboardVisible) {
+          applyKeyboardStyles(true);
+      }
     }
   });
+
+  document.addEventListener('focusout', (e) => {
+    if (e.target.matches(keyboardTriggerElements)) {
+       // Delay check slightly to see if focus moved to another input
+      setTimeout(() => {
+          const currentlyFocused = document.activeElement;
+          if (!currentlyFocused || !currentlyFocused.matches(keyboardTriggerElements)) {
+              applyKeyboardStyles(false);
+          }
+      }, 100);
+    }
+  });
+
+  // Visual Viewport API for more reliable detection (where available)
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      const newHeight = window.visualViewport.height;
+      // If viewport height is significantly smaller than window height, keyboard is likely up
+      const keyboardLikelyVisible = newHeight < originalViewportHeight * 0.9;
+      
+      if (keyboardLikelyVisible !== isKeyboardVisible) {
+          applyKeyboardStyles(keyboardLikelyVisible);
+      }
+    });
+  } else {
+    // Fallback to window resize event (less reliable)
+    window.addEventListener('resize', () => {
+        const newHeight = window.innerHeight;
+        const heightChangedSignificantly = Math.abs(newHeight - originalViewportHeight) > originalViewportHeight * 0.15;
+        
+        if(heightChangedSignificantly){
+            const keyboardLikelyVisible = newHeight < originalViewportHeight;
+             if (keyboardLikelyVisible !== isKeyboardVisible) {
+                applyKeyboardStyles(keyboardLikelyVisible);
+            }
+            originalViewportHeight = newHeight; // Update reference height
+        }
+    });
+  }
+
+  // Initial check in case keyboard is already visible on load
+  originalViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 } 

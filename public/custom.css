@@ -26,6 +26,7 @@ html, body {
   transform: translateZ(0);
   /* Ensure background is opaque */
   background-color: var(--fallback-b1, oklch(var(--b1)/1));
+  width: 100%; /* Ensure full width */
 }
 
 .btm-nav {
@@ -33,7 +34,6 @@ html, body {
   box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
   height: 4rem;
   width: 100%;
-  /* Reset any conflicting position properties */
   position: relative;
   /* Hardware acceleration for iOS */
   -webkit-backface-visibility: hidden;
@@ -42,53 +42,57 @@ html, body {
 
 /* === Main Content Area === */
 #main-content {
-  padding-bottom: 6rem; /* Ensure content isn't hidden under the nav */
+  /* Add padding for fixed nav */
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px) + 1rem); /* 4rem nav + safe area + 1rem buffer */
 }
 
 /* === Floating Action Button === */
+/* Ensure all FABs are positioned correctly */
 #add-task-fab, #add-note-fab, #add-apartment-fab {
   position: fixed;
   z-index: 5001; /* Above navbar */
   right: 1.5rem;
-  bottom: 5rem; /* Position above navbar */
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  transform: translateY(-10px); /* Pull up slightly */
+  /* Position above navbar container, accounting for its height + safe area + gap */
+  bottom: calc(4rem + env(safe-area-inset-bottom, 0px) + 1rem); 
+  /* Use translate3d for hardware acceleration */
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
 /* === Form Input Improvements === */
 /* Reduce height of textareas in modals */
 .modal-box textarea.textarea {
-  min-height: 80px !important;
-  max-height: 150px !important;
-  height: 120px !important;
+  min-height: 60px !important; /* Slightly smaller */
+  max-height: 120px !important; /* Slightly smaller max */
+  height: 80px !important; /* Default smaller height */
   resize: none; /* Prevent manual resizing */
 }
 
 /* === DaisyUI Modal Fixes === */
-/* The key issue is that we need to keep the modal visible without affecting interaction */
-
 /* Make sure modals are above the navigation */
 .modal {
   z-index: 8000 !important;
+  display: flex; /* Use flex for centering */
+  align-items: flex-end; /* Align modal to bottom */
 }
 
 /* Adjust modal box position for both mobile and desktop */
 .modal-bottom .modal-box {
-  /* Ensure the modal appears at the correct height */
   margin-top: auto !important;
   margin-bottom: 0 !important;
-  /* Hardware acceleration for smoother animations */
-  -webkit-transform: translate3d(0,0,0);
-  transform: translate3d(0,0,0);
-  /* Allow scrolling within modal if content exceeds height */
+  width: 100%; /* Ensure full width */
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   max-height: 85vh;
   overflow-y: auto;
+  /* Use translate3d for hardware acceleration */
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
 /* Fix for the Add Apartment URL modal to prevent keyboard overlap */
 .modal-bottom .modal-box form.apartment-url-form {
-  /* Taller max-height to prevent content cut-off */
   max-height: 70vh;
   display: flex;
   flex-direction: column;
@@ -106,62 +110,66 @@ html, body {
   z-index: -1;
 }
 
-/* For mobile devices, adjust the bottom space to account for the navigation */
+/* For mobile devices */
 @media (max-width: 640px) {
   .modal-bottom .modal-box {
-    padding-bottom: 1.5rem;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    /* Make modal scrollable on mobile */
-    overflow-y: auto;
+    padding-bottom: 1.5rem; /* Bottom padding inside modal */
     display: flex;
     flex-direction: column;
   }
   
-  /* Ensure form takes full height and scrolls properly */
+  /* Ensure form takes available height and scrolls */
   .modal-box form {
     flex: 1;
     overflow-y: auto;
+    padding-bottom: 60px; /* Add padding to prevent overlap with sticky actions */
   }
   
-  /* Ensure action buttons stay visible */
+  /* Ensure action buttons stay visible at the bottom */
   .modal-box .modal-action {
-    flex-shrink: 0;
     position: sticky;
-    bottom: 0;
+    bottom: -1px; /* Stick slightly below */
+    left: 0;
+    right: 0;
     background-color: var(--fallback-b1, oklch(var(--b1)/1));
-    padding-top: 0.75rem;
-    margin-top: 0.5rem !important;
-    z-index: 1; /* Ensure buttons are clickable */
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px)); /* Add padding + safe area */
+    margin-top: auto !important; /* Push to bottom */
+    border-top: 1px solid oklch(var(--b3)/0.2);
+    z-index: 10; /* Ensure buttons are above form content */
   }
 
-  /* Fix for input fields when keyboard is shown */
+  /* Fix for input fields when keyboard is shown - increase z-index slightly */
   .input:focus, .textarea:focus, .select:focus {
     position: relative;
-    z-index: 2;
+    z-index: 5;
   }
 }
 
-/* === Keyboard Detection === */
+/* === Keyboard Handling === */
 /* Applied via JS when keyboard is visible */
-.keyboard-visible .modal-box {
-  transform: translateY(-20%) !important; /* Less aggressive movement */
-  transition: transform 0.2s ease-out;
-  max-height: 70vh !important;
+body.keyboard-visible .modal-bottom .modal-box {
+  /* Reduce max height significantly to make space */
+  max-height: 55vh !important; 
+  /* Smooth transition */
+  transition: max-height 0.25s ease-out;
 }
 
 /* === For Desktop (LG breakpoint and above) === */
 @media (min-width: 1024px) {
-  .btm-nav-container {
-    display: none;
-  }
-  
   #main-content {
     padding-bottom: 2rem; /* Reset padding */
   }
   
   #add-task-fab, #add-note-fab, #add-apartment-fab {
     bottom: 2rem; /* Position differently on desktop */
+  }
+  .modal-bottom .modal-box .modal-action {
+    position: relative; /* Reset sticky positioning */
+    padding: 0.75rem 1rem;
+    border-top: none;
+  }
+  .modal-box form {
+    padding-bottom: 0; /* Reset padding */
   }
 }
 
@@ -170,38 +178,37 @@ html, body {
   /* Fix for bottom nav positioning on iOS */
   .btm-nav-container {
     height: calc(4rem + env(safe-area-inset-bottom, 20px));
-    /* iOS specific rendering fix */
-    -webkit-transform: translate3d(0,0,0);
+    -webkit-transform: translate3d(0,0,0); /* Hardware acceleration */
   }
   
+  /* iOS specific FAB positioning */
   #add-task-fab, #add-note-fab, #add-apartment-fab {
-    bottom: calc(5rem + env(safe-area-inset-bottom, 20px));
+    bottom: calc(4rem + env(safe-area-inset-bottom, 20px) + 1rem);
   }
 
   /* iOS modal fixes */
   .modal-box {
-    /* iOS specific rendering fix */
     -webkit-transform: translate3d(0,0,0);
   }
 
-  /* Fix iOS keyboard issues */
+  /* Prevent iOS zoom on focus */
   input, textarea, select {
-    font-size: 16px !important; /* Prevent iOS zoom on focus */
+    font-size: 16px !important; 
+  }
+  
+  /* Sticky actions need specific iOS handling */
+  .modal-box .modal-action {
+     padding-bottom: env(safe-area-inset-bottom, 20px); /* Adjust for notch */
   }
 }
 
 /* === Android Chrome-specific fixes === */
-@supports not (-webkit-touch-callout: none) {
-  .btm-nav-container {
-    height: calc(4rem + 8px); /* Small buffer for Android */
-  }
-}
+/* (Currently no specific overrides needed) */
 
 /* === Dark Mode Color Variables === */
 :root {
   --fallback-b1: oklch(100% 0 0);
 }
-
 [data-theme="dark"] {
   --fallback-b1: oklch(0.29287 0.02916 256.98);
 } 
