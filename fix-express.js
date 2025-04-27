@@ -1,88 +1,36 @@
-// This script ensures Express 4.17.1 is being used, not Express 5.x
-// It's a workaround for Glitch using pnpm which might still use Express 5
+// Simplified Express 5 compatibility fix for Glitch
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 
-console.log('Running Express version fix...');
+console.log('Running simplified Express fix...');
 
-// Function to check if we have Express 5.x installed
-function hasExpress5() {
+// Direct path to Express lib file
+const expressPath = path.join(__dirname, 'node_modules/express/lib/express.js');
+
+// Check if the file exists
+if (fs.existsSync(expressPath)) {
   try {
-    // Check in various potential locations
-    const possiblePaths = [
-      path.join(__dirname, 'node_modules/express/package.json'),
-      path.join(__dirname, '../express/package.json'),
-      // pnpm specific paths
-      path.join(__dirname, 'node_modules/.pnpm/express@*/node_modules/express/package.json')
-    ];
+    console.log(`Found Express at ${expressPath}`);
+    let content = fs.readFileSync(expressPath, 'utf8');
     
-    for (const pkgPath of possiblePaths) {
-      if (fs.existsSync(pkgPath)) {
-        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-        const version = pkg.version;
-        console.log(`Found Express version ${version} at ${pkgPath}`);
-        if (version.startsWith('5.')) {
-          return { hasV5: true, path: pkgPath };
-        }
-      }
-    }
-    
-    return { hasV5: false };
-  } catch (error) {
-    console.error('Error checking Express version:', error);
-    return { hasV5: false };
-  }
-}
-
-// Main function
-function fixExpress() {
-  // Check for Express 5
-  const { hasV5, path: expressPath } = hasExpress5();
-  
-  if (!hasV5) {
-    console.log('Express 5 not found, no fix needed.');
-    return;
-  }
-  
-  console.log('Express 5 detected, attempting to force install Express 4.17.1...');
-  
-  try {
-    // Try to force install Express 4.17.1
-    execSync('npm install express@4.17.1 --save-exact --no-package-lock', { 
-      stdio: 'inherit',
-      env: { ...process.env, NODE_ENV: 'development' }
-    });
-    
-    console.log('Successfully installed Express 4.17.1');
-  } catch (error) {
-    console.error('Failed to install Express 4.17.1:', error.message);
-    console.log('Will try to create an Express alias...');
-    
-    // As a fallback, try to modify the express.js file to remove node: imports
-    try {
-      // Find the express lib directory
-      const expressDir = path.dirname(expressPath);
-      const libPath = path.join(expressDir, 'lib/express.js');
+    // Check if it has node: imports
+    if (content.includes("require('node:")) {
+      console.log('Found node: imports, fixing...');
       
-      if (fs.existsSync(libPath)) {
-        let content = fs.readFileSync(libPath, 'utf8');
-        
-        // Replace node: imports with regular imports
-        content = content.replace(/require\('node:([^']+)'\)/g, "require('$1')");
-        
-        fs.writeFileSync(libPath, content);
-        console.log(`Modified ${libPath} to remove node: imports`);
-      } else {
-        console.log(`Could not find ${libPath}`);
-      }
-    } catch (error) {
-      console.error('Failed to modify Express:', error.message);
+      // Replace node: imports with regular imports
+      content = content.replace(/require\('node:([^']+)'\)/g, "require('$1')");
+      
+      // Write the modified file
+      fs.writeFileSync(expressPath, content);
+      console.log('Successfully patched Express');
+    } else {
+      console.log('No node: imports found, no patching needed');
     }
+  } catch (error) {
+    console.error('Error patching Express:', error.message);
   }
+} else {
+  console.log('Express not found at expected path');
 }
 
-// Run the fix
-fixExpress();
-
-console.log('Express version fix completed.'); 
+console.log('Express fix completed'); 

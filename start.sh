@@ -1,48 +1,28 @@
 #!/bin/bash
-# This script is used by Glitch to start the application
+# Minimal startup script for Glitch
 
-# Log Node.js version
-echo "Node.js version: $(node -v)"
-echo "npm version: $(npm -v)"
+echo "Starting Relocation Planner"
+echo "Node.js $(node -v)"
 
-# Optimize for Glitch environment
-export NODE_ENV=production
-
-# Only install dependencies if node_modules doesn't exist or if package.json has changed
-if [ ! -d "node_modules" ] || [ package.json -nt node_modules ]; then
-  echo "Installing dependencies..."
-  npm install --no-optional --no-audit --no-fund --loglevel error
-else
-  echo "Using cached dependencies"
+# Fix Express directly if needed
+if [ -f "node_modules/express/lib/express.js" ]; then
+  echo "Checking Express for compatibility..."
+  # Replace node: imports with direct imports
+  sed -i 's/require(['"'"']node:\([^'"'"']*\)['"'"'])/require(\1)/g' node_modules/express/lib/express.js || true
 fi
 
-# Ensure Express 4.17.1 is installed
-echo "Ensuring Express 4.17.1 is installed..."
-if [ -f "fix-express.js" ]; then
-  node fix-express.js
-else
-  echo "fix-express.js not found, attempting direct install"
-  npm install express@4.17.1 --save-exact --no-package-lock --loglevel error || true
-fi
-
-# Check if data.json exists
+# Create data.json if it doesn't exist
 if [ ! -f "data.json" ]; then
-  echo "Creating empty data.json file..."
+  echo "Creating empty data.json"
   echo '{"tasks":[],"notes":[],"apartments":[]}' > data.json
 fi
 
-# Check if public/styles.css exists
+# Ensure styles.css exists
 if [ ! -f "public/styles.css" ]; then
-  echo "Building CSS..."
-  # Try with the build script, but have a fallback
-  npm run build || cp src/input.css public/styles.css
-else
-  echo "CSS file already exists"
+  echo "Creating styles.css"
+  cp src/input.css public/styles.css
 fi
-
-# Make sure public directory permissions are correct
-chmod -R 755 public
 
 # Start the application
 echo "Starting application..."
-node server.js 
+exec node server.js 

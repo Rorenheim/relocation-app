@@ -1,27 +1,39 @@
 /**
- * Express patch for Glitch
- * This file patches the require system to handle 'node:' imports in Express 5
+ * Simplified Express patch for Glitch
+ * This file only modifies the require system if necessary
  */
 
-// Store the original require
-const originalRequire = module.constructor.prototype.require;
+console.log('Express compatibility patch loaded');
 
-// Create a patched version that handles node: protocol
-module.constructor.prototype.require = function patchedRequire(path) {
-  // If it's a node: import, remove the prefix
-  if (path.startsWith('node:')) {
-    const moduleName = path.substring(5); // Remove 'node:'
-    try {
-      // Try to require without the node: prefix
-      return originalRequire.call(this, moduleName);
-    } catch (error) {
-      console.error(`Error requiring ${moduleName} (from ${path}):`, error.message);
-      throw error;
+// Only apply the patch if we detect Express 5
+try {
+  const fs = require('fs');
+  const path = require('path');
+  
+  // Check if express exists and has node: imports
+  const expressPath = path.join(__dirname, 'node_modules/express/lib/express.js');
+  
+  if (fs.existsSync(expressPath)) {
+    const content = fs.readFileSync(expressPath, 'utf8');
+    
+    if (content.includes("require('node:")) {
+      console.log('Patching require system for Express 5 compatibility');
+      
+      // Store the original require
+      const originalRequire = module.constructor.prototype.require;
+      
+      // Create a patched version that simply removes the 'node:' prefix
+      module.constructor.prototype.require = function(id) {
+        if (id.startsWith('node:')) {
+          return originalRequire.call(this, id.substring(5));
+        }
+        return originalRequire.call(this, id);
+      };
+      
+      console.log('Express compatibility patch applied');
     }
   }
-  
-  // Otherwise, use the original require
-  return originalRequire.call(this, path);
-};
-
-console.log('Express compatibility patch applied'); 
+} catch (err) {
+  // In case of any errors, don't modify the require system
+  console.warn('Express patch not applied:', err.message);
+} 
