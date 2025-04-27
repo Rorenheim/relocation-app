@@ -47,23 +47,40 @@ html, body {
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
-/* === Modal Fixes === */
-/* Ensure modals appear above the fixed navigation */
-.modal, .modal-box, .modal-backdrop {
-  z-index: 6000 !important; /* Higher than nav */
+/* === DaisyUI Modal Fixes === */
+/* The key issue is that we need to keep the modal visible without affecting interaction */
+
+/* Make sure modals are above the navigation */
+.modal {
+  z-index: 8000 !important;
 }
 
-/* Adjust modal positioning to prevent navigation overlap */
-.modal-bottom.sm\:modal-middle .modal-box {
-  margin-bottom: calc(4rem + env(safe-area-inset-bottom, 20px));
+/* Adjust modal box position for both mobile and desktop */
+.modal-bottom .modal-box {
+  /* Ensure the modal appears at the correct height */
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
 }
 
-/* Ensure bottom-aligned modals don't get cut off */
+/* Fix modal-toggle behavior */
+.modal-toggle:checked + .modal {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* Ensure backdrop covers full screen */
+.modal-backdrop {
+  z-index: -1;
+}
+
+/* For mobile devices, adjust the bottom space to account for the navigation */
 @media (max-width: 640px) {
   .modal-bottom .modal-box {
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 20px));
-    max-height: calc(100vh - 5rem - env(safe-area-inset-bottom, 20px));
-    overflow-y: auto;
+    padding-bottom: 1.5rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    max-height: 90vh;
   }
 }
 
@@ -79,11 +96,6 @@ html, body {
   
   #add-task-fab {
     bottom: 2rem; /* Position differently on desktop */
-  }
-  
-  /* Reset modal bottom margin on desktop */
-  .modal-bottom.sm\:modal-middle .modal-box {
-    margin-bottom: 0;
   }
 }
 
