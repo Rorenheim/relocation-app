@@ -47,6 +47,26 @@ html, body {
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
+/* === Modal Fixes === */
+/* Ensure modals appear above the fixed navigation */
+.modal, .modal-box, .modal-backdrop {
+  z-index: 6000 !important; /* Higher than nav */
+}
+
+/* Adjust modal positioning to prevent navigation overlap */
+.modal-bottom.sm\:modal-middle .modal-box {
+  margin-bottom: calc(4rem + env(safe-area-inset-bottom, 20px));
+}
+
+/* Ensure bottom-aligned modals don't get cut off */
+@media (max-width: 640px) {
+  .modal-bottom .modal-box {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 20px));
+    max-height: calc(100vh - 5rem - env(safe-area-inset-bottom, 20px));
+    overflow-y: auto;
+  }
+}
+
 /* === For Desktop (LG breakpoint and above) === */
 @media (min-width: 1024px) {
   .btm-nav-container {
@@ -59,6 +79,11 @@ html, body {
   
   #add-task-fab {
     bottom: 2rem; /* Position differently on desktop */
+  }
+  
+  /* Reset modal bottom margin on desktop */
+  .modal-bottom.sm\:modal-middle .modal-box {
+    margin-bottom: 0;
   }
 }
 
