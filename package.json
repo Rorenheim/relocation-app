@@ -11,7 +11,7 @@
     "dependencies": {
         "axios": "^0.27.2",
         "body-parser": "^1.19.0",
-        "cheerio": "^1.0.0-rc.3",
+        "cheerio": "1.0.0-rc.2",
         "compression": "^1.7.4",
         "cors": "^2.8.5",
         "daisyui": "^2.6.4",
@@ -29,7 +29,13 @@
     },
     "overrides": {
         "express": "4.17.1",
-        "finalhandler": "1.1.2"
+        "finalhandler": "1.1.2",
+        "parse5": "6.0.1",
+        "parse5-parser-stream": "6.0.1"
+    },
+    "resolutions": {
+        "parse5": "6.0.1",
+        "parse5-parser-stream": "6.0.1"
     },
     "license": "MIT"
 }
