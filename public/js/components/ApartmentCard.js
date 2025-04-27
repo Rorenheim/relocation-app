@@ -62,7 +62,7 @@ class ApartmentCard {
     this.element = document.createElement('div');
     
     // Set attributes and classes
-    this.element.className = 'card bg-base-100 shadow-md hover:shadow-lg transition-all cursor-pointer';
+    this.element.className = 'card bg-base-100 shadow-md hover:shadow-lg transition-all cursor-pointer apartment-card';
     this.element.setAttribute('data-apartment-id', this.apartment.id);
     
     // Get the apartment metadata
@@ -88,7 +88,7 @@ class ApartmentCard {
       domain = 'unknown';
     }
     
-    // Set the inner HTML - remove explicit favorite/applied text
+    // Set the inner HTML - simple version with just title and link
     this.element.innerHTML = `
       <div class="card-body p-4">
         <div class="flex justify-between items-start">
@@ -97,10 +97,12 @@ class ApartmentCard {
           </h3>
           <div class="flex gap-1">
             <button class="btn btn-ghost btn-sm p-1 h-auto min-h-0 favorite-btn tooltip" data-tip="${isFavorite ? 'Remove favorite' : 'Add to favorites'}">
-              <i class="ri-heart-${isFavorite ? 'fill text-error' : 'line'}"></i>
+              <i class="ri-heart-${isFavorite ? 'fill text-error' : 'line'} fav-indicator ${isFavorite ? 'colored' : ''}"></i>
+              <span class="fav-text sr-only">${isFavorite ? 'Favorited' : 'Not favorited'}</span>
             </button>
             <button class="btn btn-ghost btn-sm p-1 h-auto min-h-0 applied-btn tooltip" data-tip="${isApplied ? 'Mark as not applied' : 'Mark as applied'}">
-              <i class="ri-file-paper-2-${isApplied ? 'fill text-success' : 'line'}"></i>
+              <i class="ri-file-paper-2-${isApplied ? 'fill text-success' : 'line'} applied-indicator ${isApplied ? 'colored' : ''}"></i>
+              <span class="applied-text sr-only">${isApplied ? 'Applied' : 'Not applied'}</span>
             </button>
           </div>
         </div>
