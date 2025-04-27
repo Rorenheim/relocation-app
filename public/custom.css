@@ -8,6 +8,7 @@ html, body {
   height: 100%;
   overflow-x: hidden;
   position: relative;
+  -webkit-overflow-scrolling: touch; /* Improve iOS momentum scrolling */
 }
 
 /* === Bottom Navigation === */
@@ -18,8 +19,13 @@ html, body {
   right: 0;
   bottom: 0;
   z-index: 5000;
-  /* Account for iOS safe area */
+  /* Account for iOS safe area with fallback */
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Fix for iOS navbar rendering issues */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  /* Ensure background is opaque */
+  background-color: var(--fallback-b1, oklch(var(--b1)/1));
 }
 
 .btm-nav {
@@ -29,6 +35,9 @@ html, body {
   width: 100%;
   /* Reset any conflicting position properties */
   position: relative;
+  /* Hardware acceleration for iOS */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* === Main Content Area === */
@@ -37,7 +46,7 @@ html, body {
 }
 
 /* === Floating Action Button === */
-#add-task-fab {
+#add-task-fab, #add-note-fab, #add-apartment-fab {
   position: fixed;
   z-index: 5001; /* Above navbar */
   right: 1.5rem;
@@ -69,6 +78,20 @@ html, body {
   /* Ensure the modal appears at the correct height */
   margin-top: auto !important;
   margin-bottom: 0 !important;
+  /* Hardware acceleration for smoother animations */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  /* Allow scrolling within modal if content exceeds height */
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* Fix for the Add Apartment URL modal to prevent keyboard overlap */
+.modal-bottom .modal-box form.apartment-url-form {
+  /* Taller max-height to prevent content cut-off */
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Fix modal-toggle behavior */
@@ -89,7 +112,6 @@ html, body {
     padding-bottom: 1.5rem;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    max-height: 90vh;
     /* Make modal scrollable on mobile */
     overflow-y: auto;
     display: flex;
@@ -110,15 +132,22 @@ html, body {
     background-color: var(--fallback-b1, oklch(var(--b1)/1));
     padding-top: 0.75rem;
     margin-top: 0.5rem !important;
+    z-index: 1; /* Ensure buttons are clickable */
+  }
+
+  /* Fix for input fields when keyboard is shown */
+  .input:focus, .textarea:focus, .select:focus {
+    position: relative;
+    z-index: 2;
   }
 }
 
 /* === Keyboard Detection === */
 /* Applied via JS when keyboard is visible */
 .keyboard-visible .modal-box {
-  transform: translateY(-40%);
+  transform: translateY(-20%) !important; /* Less aggressive movement */
   transition: transform 0.2s ease-out;
-  max-height: 60vh !important;
+  max-height: 70vh !important;
 }
 
 /* === For Desktop (LG breakpoint and above) === */
@@ -131,19 +160,33 @@ html, body {
     padding-bottom: 2rem; /* Reset padding */
   }
   
-  #add-task-fab {
+  #add-task-fab, #add-note-fab, #add-apartment-fab {
     bottom: 2rem; /* Position differently on desktop */
   }
 }
 
 /* === iOS-specific fixes === */
 @supports (-webkit-touch-callout: none) {
+  /* Fix for bottom nav positioning on iOS */
   .btm-nav-container {
     height: calc(4rem + env(safe-area-inset-bottom, 20px));
+    /* iOS specific rendering fix */
+    -webkit-transform: translate3d(0,0,0);
   }
   
-  #add-task-fab {
+  #add-task-fab, #add-note-fab, #add-apartment-fab {
     bottom: calc(5rem + env(safe-area-inset-bottom, 20px));
+  }
+
+  /* iOS modal fixes */
+  .modal-box {
+    /* iOS specific rendering fix */
+    -webkit-transform: translate3d(0,0,0);
+  }
+
+  /* Fix iOS keyboard issues */
+  input, textarea, select {
+    font-size: 16px !important; /* Prevent iOS zoom on focus */
   }
 }
 

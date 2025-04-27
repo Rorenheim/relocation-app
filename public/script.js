@@ -43,6 +43,12 @@ function fixMobileModals() {
       e.stopPropagation();
     }, { passive: true });
   });
+
+  // Add specific class to the apartment URL form
+  const apartmentUrlForm = document.getElementById('add-url-form');
+  if (apartmentUrlForm) {
+    apartmentUrlForm.classList.add('apartment-url-form');
+  }
 }
 
 /**
@@ -67,9 +73,21 @@ function setupKeyboardDetection() {
         // Add class to indicate keyboard is visible
         document.body.classList.add('keyboard-visible');
         
+        // Add iOS specific fixes
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+          // Apply specific CSS fixes for iOS
+          modalBox.style.webkitTransform = 'translate3d(0,0,0)';
+          
+          // Set position fixed to prevent scrolling issues
+          document.body.style.position = 'fixed';
+          document.body.style.width = '100%';
+        }
+        
         // Scroll the input into view with a small delay to let keyboard appear
         setTimeout(() => {
-          activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Disable smooth scrolling for iOS (can cause issues)
+          const behavior = /iPad|iPhone|iPod/.test(navigator.userAgent) ? 'auto' : 'smooth';
+          activeElement.scrollIntoView({ behavior, block: 'center' });
         }, 300);
       }
     }
@@ -82,6 +100,12 @@ function setupKeyboardDetection() {
       if (!document.activeElement.matches(keyboardTriggerElements)) {
         // Remove keyboard visible class
         document.body.classList.remove('keyboard-visible');
+        
+        // Reset iOS specific fixes
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+          document.body.style.position = '';
+          document.body.style.width = '';
+        }
       }
     }, 100);
   });
@@ -92,13 +116,39 @@ function setupKeyboardDetection() {
     // If the window height decreased significantly, keyboard likely appeared
     if (window.innerHeight < windowHeight * 0.8) {
       document.body.classList.add('keyboard-visible');
+      
+      // For iOS specifically
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        // Scroll the active element into view if any
+        const activeEl = document.activeElement;
+        if (activeEl && activeEl.matches(keyboardTriggerElements)) {
+          setTimeout(() => {
+            activeEl.scrollIntoView({ behavior: 'auto', block: 'center' });
+          }, 300);
+        }
+      }
     } 
     // If window height increased back to normal, keyboard likely disappeared
     else if (window.innerHeight > windowHeight * 0.9) {
       document.body.classList.remove('keyboard-visible');
+      
+      // Reset iOS specific fixes
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        document.body.style.position = '';
+        document.body.style.width = '';
+      }
     }
     
     // Update stored window height
     windowHeight = window.innerHeight;
+  });
+  
+  // Special handling for the Apartment URL form
+  document.addEventListener('DOMContentLoaded', () => {
+    const urlForm = document.getElementById('add-url-form');
+    if (urlForm) {
+      // Ensure the form is properly styled
+      urlForm.classList.add('apartment-url-form');
+    }
   });
 } 

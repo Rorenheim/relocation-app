@@ -228,7 +228,7 @@ class ApartmentsPage {
         <div class="modal modal-bottom sm:modal-middle" role="dialog">
           <div class="modal-box">
             <h3 class="font-bold text-xl mb-5">Add Apartment URL</h3>
-            <form id="add-url-form" class="space-y-4">
+            <form id="add-url-form" class="space-y-4 apartment-url-form">
               <div class="form-control">
                 <label class="label"><span class="label-text">Apartment Listing URL</span></label>
                 <input type="url" id="modal-apartment-url" class="input input-bordered" 
@@ -287,7 +287,9 @@ class ApartmentsPage {
     // Add event listener to URL input for title preview
     const urlInput = document.getElementById('modal-apartment-url');
     if (urlInput) {
-      // Add debounced input event listener to fetch title preview
+      // Remove debounced input event that fetches title preview
+      // Don't auto-fill title, let user enter it manually
+      /*
       let debounceTimer;
       urlInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
@@ -300,6 +302,7 @@ class ApartmentsPage {
           }, 1000);
         }
       });
+      */
     }
     
     // Initial render
