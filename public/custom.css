@@ -1,34 +1,62 @@
 /* Custom styles for the relocation planner app */
 
-/* Fixed bottom navigation */
+/* --- Layout Fixes --- */
+
+/* Ensure drawer content takes full height */
+.drawer-content {
+  min-height: 100vh;
+}
+
+/* Main content padding to avoid overlap with fixed header/footer */
+#main-content {
+  /* Padding top might be needed if header overlaps */
+  /* padding-top: 4rem; */ 
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom)); /* Adjust for btm-nav height + safe area */
+}
+
+/* --- Bottom Navigation --- */
 .btm-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 30;
   width: 100%;
+  z-index: 1000; /* Ensure it's above other content */
+  /* Apply safe area padding directly */
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(4rem + env(safe-area-inset-bottom)); /* Adjust height for safe area */
+  /* Ensure background color is applied */
+  background-color: var(--fallback-b1,oklch(var(--b1)/1)); 
 }
 
-/* Adjust main content padding to prevent overlap with the bottom navigation */
-#main-content {
-  padding-bottom: 4.5rem;
-}
-
-/* Better floating action button styling for mobile devices */
+/* --- Floating Action Button --- */
 #add-task-fab {
-  bottom: 5rem;
-  right: 1.5rem;
+  position: fixed;
+  /* Adjust bottom based on btm-nav height (4rem) + desired gap (1rem) + safe area */
+  bottom: calc(4rem + 1rem + env(safe-area-inset-bottom)); 
+  right: 1.5rem; /* Adjust as needed */
+  z-index: 1050; /* Ensure it's above the nav bar */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Add safe area insets for iOS devices */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .btm-nav {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  #add-task-fab {
-    bottom: calc(5rem + env(safe-area-inset-bottom));
+/* Remove redundant/conflicting styles from Tailwind classes if necessary */
+/* Example: If Tailwind's fixed positioning conflicts */
+/*.btm-nav.fixed { position: fixed !important; } */
+
+/* Remove the fixed positioning class added directly in HTML, control via CSS */
+/* .btm-nav { position: static; } /* Reset if needed before applying fixed below */
+
+/* Ensure DaisyUI variables are available */
+:root {
+  --fallback-b1: oklch(100% 0 0);
+}
+[data-theme="dark"] {
+   --fallback-b1: oklch(0.29287 0.02916 256.98);
+}
+
+/* Ensure padding adjustment is applied only when btm-nav is visible */
+@media (min-width: 1024px) { 
+  #main-content {
+    padding-bottom: 0; /* Remove padding on large screens */
   }
 } 

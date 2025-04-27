@@ -214,18 +214,25 @@ class TasksPage {
       return;
     }
     
-    // Sort tasks: by date (if present), then by createdAt
+    // Sort tasks: by date (closest first), then by createdAt
     const sortedTasks = [...filteredTasks].sort((a, b) => {
-      // Sort by date (newest date first if available)
-      if (a.date && b.date) {
-        return new Date(b.date) - new Date(a.date); // Sort descending by date
-      } else if (a.date) {
-        return -1; // Tasks with dates come before those without
-      } else if (b.date) {
-        return 1; // Tasks without dates come after those with
+      const dateA = a.date ? new Date(a.date) : null;
+      const dateB = b.date ? new Date(b.date) : null;
+
+      // If both have dates, sort ascending (closest first)
+      if (dateA && dateB) {
+        return dateA - dateB;
+      } 
+      // If only A has a date, it comes first
+      else if (dateA) {
+        return -1; 
+      } 
+      // If only B has a date, it comes first
+      else if (dateB) {
+        return 1;
       }
       
-      // Finally by createdAt (newest first)
+      // If neither has a date, sort by createdAt (newest first)
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
     
@@ -293,7 +300,7 @@ class TasksPage {
         </div>
         
         <!-- Floating Action Button -->
-        <button id="add-task-fab" class="btn btn-primary btn-circle btn-lg fixed bottom-20 right-6 shadow-lg hover:scale-110 transition-transform duration-200 z-50">
+        <button id="add-task-fab" class="btn btn-primary btn-circle btn-lg shadow-lg hover:scale-110 transition-transform duration-200">
           <i class="ri-add-line text-2xl"></i>
         </button>
 

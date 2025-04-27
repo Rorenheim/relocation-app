@@ -30,9 +30,9 @@
 <body class="min-h-screen bg-gray-100">
   <div class="drawer">
     <input id="drawer-toggle" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content flex flex-col">
+    <div class="drawer-content flex flex-col min-h-screen">
       <!-- App Header -->
-      <header class="navbar bg-base-100 shadow-md z-30">
+      <header class="navbar bg-base-100 shadow-md z-30 flex-shrink-0">
         <div class="navbar-start">
           <a href="#" class="font-bold normal-case text-xl text-primary pl-4 lg:pl-0">Berlin → Frankfurt</a>
         </div>
@@ -52,7 +52,7 @@
       </header>
 
       <!-- Main Content -->
-      <main id="main-content" class="flex-1 overflow-y-auto bg-base-200">
+      <main id="main-content" class="flex-1 overflow-y-auto bg-base-200 p-4 md:p-6">
         <!-- Content will be dynamically loaded here -->
         <div class="flex items-center justify-center h-full">
           <span class="loading loading-spinner loading-lg text-primary"></span>
@@ -60,7 +60,7 @@
       </main>
 
       <!-- Mobile Navigation -->
-      <div class="btm-nav lg:hidden fixed bottom-0 w-full z-30">
+      <div class="btm-nav lg:hidden flex-shrink-0">
         <a href="#overview" class="nav-btn" data-page="overview">
           <i class="ri-dashboard-line"></i>
           <span class="btm-nav-label">Overview</span>
