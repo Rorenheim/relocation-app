@@ -47,6 +47,15 @@ html, body {
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
+/* === Form Input Improvements === */
+/* Reduce height of textareas in modals */
+.modal-box textarea.textarea {
+  min-height: 80px !important;
+  max-height: 150px !important;
+  height: 120px !important;
+  resize: none; /* Prevent manual resizing */
+}
+
 /* === DaisyUI Modal Fixes === */
 /* The key issue is that we need to keep the modal visible without affecting interaction */
 
@@ -81,7 +90,35 @@ html, body {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     max-height: 90vh;
+    /* Make modal scrollable on mobile */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
+  
+  /* Ensure form takes full height and scrolls properly */
+  .modal-box form {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  /* Ensure action buttons stay visible */
+  .modal-box .modal-action {
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    background-color: var(--fallback-b1, oklch(var(--b1)/1));
+    padding-top: 0.75rem;
+    margin-top: 0.5rem !important;
+  }
+}
+
+/* === Keyboard Detection === */
+/* Applied via JS when keyboard is visible */
+.keyboard-visible .modal-box {
+  transform: translateY(-40%);
+  transition: transform 0.2s ease-out;
+  max-height: 60vh !important;
 }
 
 /* === For Desktop (LG breakpoint and above) === */

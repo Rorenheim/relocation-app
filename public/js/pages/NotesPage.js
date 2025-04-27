@@ -261,7 +261,7 @@ class NotesPage {
               </div>
               <div class="form-control">
                 <label class="label"><span class="label-text">Content</span></label>
-                <textarea id="new-note-content-modal" class="textarea textarea-bordered" rows="5" placeholder="Write your note here..."></textarea>
+                <textarea id="new-note-content-modal" class="textarea textarea-bordered" rows="3" placeholder="Write your note here..."></textarea>
               </div>
               <div class="modal-action mt-6">
                 <label for="add-note-modal" class="btn btn-ghost">Cancel</label>
@@ -291,7 +291,7 @@ class NotesPage {
               </div>
               <div class="form-control">
                 <label class="label"><span class="label-text">Content</span></label>
-                <textarea id="edit-note-content" class="textarea textarea-bordered" rows="5"></textarea>
+                <textarea id="edit-note-content" class="textarea textarea-bordered" rows="3"></textarea>
               </div>
             </form>
             <div class="modal-action mt-6">
