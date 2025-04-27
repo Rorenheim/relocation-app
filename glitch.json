@@ -1,15 +1,22 @@
 {
-  "install": "bash -c 'rm -rf node_modules && npm install --no-save express@4.16.4 finalhandler@1.1.2'",
-  "start": "bash start.sh",
-  "watch": {
-    "ignore": [
-      "node_modules"
+  "start": "bash -c 'chmod +x start.sh && ./start.sh'",
+  "install": {
+    "include": [
+      "^package\\.json$",
+      "^\\.env$"
+    ]
+  },
+  "restart": {
+    "exclude": [
+      "^public/",
+      "^dist/"
     ],
-    "restart": {
-      "include": [
-        "^server\\.js$",
-        "^package\\.json$"
-      ]
-    }
+    "include": [
+      "\\.js$",
+      "\\.json"
+    ]
+  },
+  "engines": {
+    "node": "12.x"
   }
 } 
