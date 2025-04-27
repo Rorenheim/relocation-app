@@ -5,7 +5,6 @@
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
-        "glitch": "./start.sh",
         "dev": "nodemon server.js",
         "build": "tailwindcss -i ./src/input.css -o ./public/styles.css || cp src/input.css public/styles.css"
     },
