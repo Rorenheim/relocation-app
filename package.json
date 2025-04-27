@@ -4,7 +4,7 @@
     "description": "A relocation planning app for moving from Berlin to Frankfurt",
     "main": "server.js",
     "scripts": {
-        "start": "nvm use 18 && node server.js",
+        "start": ". ~/.nvm/nvm.sh && nvm use 18 && node server.js",
         "dev": "nodemon server.js",
         "build": "tailwindcss -i ./src/input.css -o ./public/styles.css || cp src/input.css public/styles.css"
     },
