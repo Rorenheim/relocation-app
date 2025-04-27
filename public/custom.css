@@ -1,0 +1,34 @@
+/* Custom styles for the relocation planner app */
+
+/* Fixed bottom navigation */
+.btm-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  width: 100%;
+}
+
+/* Adjust main content padding to prevent overlap with the bottom navigation */
+#main-content {
+  padding-bottom: 4.5rem;
+}
+
+/* Better floating action button styling for mobile devices */
+#add-task-fab {
+  bottom: 5rem;
+  right: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Add safe area insets for iOS devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .btm-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  #add-task-fab {
+    bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+} 

@@ -293,7 +293,7 @@ class TasksPage {
         </div>
         
         <!-- Floating Action Button -->
-        <button id="add-task-fab" class="btn btn-primary btn-circle btn-lg fixed bottom-24 right-4 shadow-lg hover:scale-110 transition-transform duration-200 z-50">
+        <button id="add-task-fab" class="btn btn-primary btn-circle btn-lg fixed bottom-20 right-6 shadow-lg hover:scale-110 transition-transform duration-200 z-50">
           <i class="ri-add-line text-2xl"></i>
         </button>
 
