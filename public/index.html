@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light" class="min-h-full">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="description" content="Relocation planner for moving from Berlin to Frankfurt">
   <meta name="theme-color" content="#4126F8">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -51,32 +51,37 @@
         </div>
       </header>
 
-      <!-- Main Content -->
-      <main id="main-content" class="flex-1 overflow-y-auto bg-base-200 p-4 md:p-6">
-        <!-- Content will be dynamically loaded here -->
-        <div class="flex items-center justify-center h-full">
-          <span class="loading loading-spinner loading-lg text-primary"></span>
-        </div>
-      </main>
+      <!-- Mobile Shell - contains both scrollable content and fixed elements -->
+      <div class="relative flex-1 flex flex-col">
+        <!-- Scrollable Content Area -->
+        <main id="main-content" class="flex-1 overflow-y-auto bg-base-200 p-4 md:p-6 pb-24">
+          <!-- Content will be dynamically loaded here -->
+          <div class="flex items-center justify-center h-full">
+            <span class="loading loading-spinner loading-lg text-primary"></span>
+          </div>
+        </main>
 
-      <!-- Mobile Navigation -->
-      <div class="btm-nav lg:hidden flex-shrink-0">
-        <a href="#overview" class="nav-btn" data-page="overview">
-          <i class="ri-dashboard-line"></i>
-          <span class="btm-nav-label">Overview</span>
-        </a>
-        <a href="#tasks" class="nav-btn" data-page="tasks">
-          <i class="ri-task-line"></i>
-          <span class="btm-nav-label">Tasks</span>
-        </a>
-        <a href="#notes" class="nav-btn" data-page="notes">
-          <i class="ri-sticky-note-line"></i>
-          <span class="btm-nav-label">Notes</span>
-        </a>
-        <a href="#apartments" class="nav-btn" data-page="apartments">
-          <i class="ri-home-line"></i>
-          <span class="btm-nav-label">Apartments</span>
-        </a>
+        <!-- Mobile Navigation - in fixed container -->
+        <div class="btm-nav-container lg:hidden">
+          <div class="btm-nav">
+            <a href="#overview" class="nav-btn" data-page="overview">
+              <i class="ri-dashboard-line"></i>
+              <span class="btm-nav-label">Overview</span>
+            </a>
+            <a href="#tasks" class="nav-btn" data-page="tasks">
+              <i class="ri-task-line"></i>
+              <span class="btm-nav-label">Tasks</span>
+            </a>
+            <a href="#notes" class="nav-btn" data-page="notes">
+              <i class="ri-sticky-note-line"></i>
+              <span class="btm-nav-label">Notes</span>
+            </a>
+            <a href="#apartments" class="nav-btn" data-page="apartments">
+              <i class="ri-home-line"></i>
+              <span class="btm-nav-label">Apartments</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
     

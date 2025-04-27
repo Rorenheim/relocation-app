@@ -1,61 +1,90 @@
 /* Custom styles for the relocation planner app */
 
-/* --- Layout Fixes --- */
-body {
-  /* Prevent horizontal scroll issues */
-  overflow-x: hidden; 
+/* Mobile-friendly layout fixes */
+
+/* === Core Layout === */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
-/* Ensure drawer content takes full height */
-.drawer-content {
-  min-height: 100vh;
-}
-
-/* Main content padding */
-#main-content {
-  /* Add padding to avoid overlap with fixed footer, use fallback for env() */
-  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px)); 
-}
-
-/* --- Bottom Navigation (Mobile Only) --- */
-.btm-nav.lg\:hidden { /* Target only the mobile nav */
-  position: fixed !important; /* Force fixed position */
-  bottom: 0;
+/* === Bottom Navigation === */
+/* Container for bottom nav with proper positioning */
+.btm-nav-container {
+  position: fixed;
   left: 0;
   right: 0;
+  bottom: 0;
+  z-index: 5000;
+  /* Account for iOS safe area */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.btm-nav {
+  background-color: var(--fallback-b1, oklch(var(--b1)/1));
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  height: 4rem;
   width: 100%;
-  /* Adjust height and padding for safe area, use fallback */
-  height: calc(4rem + env(safe-area-inset-bottom, 0px)); 
-  padding-bottom: env(safe-area-inset-bottom, 0px); 
-  z-index: 2000 !important; /* Higher z-index */
-  /* Ensure background and add subtle shadow for visibility */
-  background-color: var(--fallback-b1, oklch(var(--b1)/1)); 
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  /* Reset any conflicting position properties */
+  position: relative;
 }
 
-/* --- Floating Action Button --- */
+/* === Main Content Area === */
+#main-content {
+  padding-bottom: 6rem; /* Ensure content isn't hidden under the nav */
+}
+
+/* === Floating Action Button === */
 #add-task-fab {
-  position: fixed !important; /* Force fixed position */
-  /* Position above the nav bar, accounting for nav height (4rem), gap (1rem), and safe area */
-  bottom: calc(4rem + 1rem + env(safe-area-inset-bottom, 0px)); 
-  right: 1.5rem; /* Adjust horizontal position if needed */
-  z-index: 2050 !important; /* Ensure it's above the nav bar */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  z-index: 5001; /* Above navbar */
+  right: 1.5rem;
+  bottom: 5rem; /* Position above navbar */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transform: translateY(-10px); /* Pull up slightly */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
-/* On larger screens, remove bottom padding as nav bar is hidden */
-@media (min-width: 1024px) { 
-  #main-content {
-    padding-bottom: 0; 
+/* === For Desktop (LG breakpoint and above) === */
+@media (min-width: 1024px) {
+  .btm-nav-container {
+    display: none;
   }
-  /* Consider hiding FAB if it doesn't make sense on desktop view */
-  /* #add-task-fab { display: none; } */
+  
+  #main-content {
+    padding-bottom: 2rem; /* Reset padding */
+  }
+  
+  #add-task-fab {
+    bottom: 2rem; /* Position differently on desktop */
+  }
 }
 
-/* Fallback definition for DaisyUI background variable */
+/* === iOS-specific fixes === */
+@supports (-webkit-touch-callout: none) {
+  .btm-nav-container {
+    height: calc(4rem + env(safe-area-inset-bottom, 20px));
+  }
+  
+  #add-task-fab {
+    bottom: calc(5rem + env(safe-area-inset-bottom, 20px));
+  }
+}
+
+/* === Android Chrome-specific fixes === */
+@supports not (-webkit-touch-callout: none) {
+  .btm-nav-container {
+    height: calc(4rem + 8px); /* Small buffer for Android */
+  }
+}
+
+/* === Dark Mode Color Variables === */
 :root {
   --fallback-b1: oklch(100% 0 0);
 }
+
 [data-theme="dark"] {
-   --fallback-b1: oklch(0.29287 0.02916 256.98);
+  --fallback-b1: oklch(0.29287 0.02916 256.98);
 } 
