@@ -4,11 +4,10 @@
 echo "Starting Relocation Planner"
 echo "Node.js $(node -v)"
 
-# Fix Express directly if needed
-if [ -f "node_modules/express/lib/express.js" ]; then
-  echo "Checking Express for compatibility..."
-  # Replace node: imports with direct imports
-  sed -i 's/require(['"'"']node:\([^'"'"']*\)['"'"'])/require(\1)/g' node_modules/express/lib/express.js || true
+# Force install compatible express and finalhandler
+echo "Ensuring compatible dependencies..."
+if ! [ -d "node_modules/express" ] || [ -d "node_modules/finalhandler" ]; then
+  npm install --no-save express@4.16.4 finalhandler@1.1.2
 fi
 
 # Create data.json if it doesn't exist
@@ -20,7 +19,8 @@ fi
 # Ensure styles.css exists
 if [ ! -f "public/styles.css" ]; then
   echo "Creating styles.css"
-  cp src/input.css public/styles.css
+  mkdir -p public
+  cp src/input.css public/styles.css 2>/dev/null || echo "/* Base styles */" > public/styles.css
 fi
 
 # Start the application

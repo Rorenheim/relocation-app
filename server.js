@@ -1,22 +1,4 @@
-// Apply direct Express patch for node: imports
-try {
-  // Simple and direct patch for Express 5
-  const fs = require('fs');
-  const path = require('path');
-  const expressPath = path.join(__dirname, 'node_modules/express/lib/express.js');
-  
-  if (fs.existsSync(expressPath)) {
-    const content = fs.readFileSync(expressPath, 'utf8');
-    if (content.includes("require('node:")) {
-      const patched = content.replace(/require\('node:([^']+)'\)/g, "require('$1')");
-      fs.writeFileSync(expressPath, patched);
-      console.log('Express patched for compatibility');
-    }
-  }
-} catch (err) {
-  console.warn('Express patch skipped:', err.message);
-}
-
+// Load modules
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -25,6 +7,9 @@ const cors = require('cors');
 const compression = require('compression');
 const axios = require('axios');
 const cheerio = require('cheerio');
+
+// Display Node.js version on startup for debugging
+console.log(`Node.js version: ${process.version}`);
 
 const app = express();
 const port = process.env.PORT || 3000;
